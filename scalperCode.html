@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scalter code</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+   <div id="app">
+    <h1>Hello {{userName}} world~</h1>
+    <input type="text" v-model="userName">
+    <p v-if="userName.length>9"> Name too long!!</p>    
+    <button v-on:click="addItem">additem</button>
+    <button @click="popItem">popitem</button>
+    <button @click="fetchTodos">fetchTodos</button>
+    <p>{{frameworks}}</p>
+
+     <ul>
+        <li v-for="framework in frameworks">
+            {{framework}}
+        </li>
+     </ul>
+     <ul>
+        <li v-for="(todo, index) in todos">
+            {{todo}}
+            <!--
+            <button v-if="todo.completed==true" @click="completeTodo(index)">완료</button>
+            -->
+            <button @click="completeTodo(index)">완료</button>
+        </li>
+     </ul>
+
+    <h2 :class="{ many: completedTodos > 13 }"> 완료된 Todo는 총 {{completedTodos}}개 입니다.</h2>
+    </div> 
+
+<script>
+    const app = new Vue({
+        el:"#app",
+        data:{
+            userName: "scalter",
+            frameworks:["react", "vue", "anguler", "C", "C++", "JAVA"],
+            todos:[]
+        },
+        computed:{
+            completedTodos() {
+                var clen = this.todos.filter(todo=> todo.completed === true).length ;     
+                return clen ;
+            }
+        },
+        methods: {
+            addItem(){
+               //console.log("add Item work!", this.userName) ;
+               this.frameworks.push(this.userName) ;
+            },
+            popItem(){
+                //console.log("add Item work!", this.userName) ;
+                this.frameworks.pop() ;
+             },
+             fetchTodos(){
+                 fetch("https://jsonplaceholder.typicode.com/todos?_start=0&_end=20") 
+                 .then(res=>res.json())
+                 //.then(data=>console.log(data));
+                 //.then(data=> this.todos = data );
+                 .then(data=> {
+                    this.todos = data ;
+                 }) ;
+             },
+             completeTodo(index) {
+                console.log(index) ;
+                this.todos[index].completed=true ;
+             }
+         }
+    }) ;
+</script>
+<style>
+    .many {
+        color: red
+    }
+</style>
+
+</body>
+</html>
